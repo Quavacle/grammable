@@ -27,11 +27,9 @@ RSpec.describe GramsController, type: :controller do
       expect(response).to redirect_to new_user_session_path
     end
 
-    it "should show edit page if gram is found" do
+    it "should show edit page if gram is found" do    
       gram = FactoryBot.create(:gram)
-      user = FactoryBot.create(:user)
-
-      sign_in user
+      sign_in gram.user
       get :edit, params: { id: gram.id }
       expect(response).to have_http_status(:success)
     end
@@ -47,9 +45,8 @@ RSpec.describe GramsController, type: :controller do
   describe "grams#update action" do
 
     it "should allow users to update grams" do
-      user = FactoryBot.create(:user)
-      sign_in user
       gram = FactoryBot.create(:gram, message: "Initial value")
+      sign_in gram.user
       patch :update, params: { id: gram.id, gram: { message: 'Changed'} }
       expect(response).to redirect_to root_path
       gram.reload
@@ -65,6 +62,7 @@ RSpec.describe GramsController, type: :controller do
 
     it "should render edit found unprocessable_entity" do
       gram = FactoryBot.create(:gram, message: "Initial value")
+      sign_in gram.user
       patch :update, params: { id: gram.id, gram: { message: ''} }
       expect(response).to have_http_status(:unprocessable_entity)
       gram.reload
@@ -116,17 +114,15 @@ RSpec.describe GramsController, type: :controller do
 
   describe "grams#destroy action" do
     it "should check user is logged in and can destroy a gram in the DB" do
-      user = FactoryBot.create(:user)
-      sign_in user
       gram = FactoryBot.create(:gram, message: "Initial value")
+      sign_in gram.user
       delete :destroy, params: { id: gram.id }
       expect(response).to redirect_to root_path
     end
 
     it "should display 404 if attempting to destroy with an invalid id" do
-      user = FactoryBot.create(:user)
-      sign_in user
       gram = FactoryBot.create(:gram, message: "Initial value")
+      sign_in gram.user
       delete :destroy, params: { id: 'absoluteGarbage'}
       expect(response).to have_http_status(:not_found)
     end
