@@ -113,4 +113,28 @@ RSpec.describe GramsController, type: :controller do
       expect(gram_count).to eq Gram.count    
     end
   end
+
+  describe "grams#destroy action" do
+    it "should check user is logged in and can destroy a gram in the DB" do
+      user = FactoryBot.create(:user)
+      sign_in user
+      gram = FactoryBot.create(:gram, message: "Initial value")
+      delete :destroy, params: { id: gram.id }
+      expect(response).to redirect_to root_path
+    end
+
+    it "should display 404 if attempting to destroy with an invalid id" do
+      user = FactoryBot.create(:user)
+      sign_in user
+      gram = FactoryBot.create(:gram, message: "Initial value")
+      delete :destroy, params: { id: 'absoluteGarbage'}
+      expect(response).to have_http_status(:not_found)
+    end
+
+    it "should show unauthorized if user not logged in" do
+      gram = FactoryBot.create(:gram)
+      delete :destroy, params: { id: gram.id }
+      expect(response).to redirect_to new_user_session_path
+    end
+    end
 end
