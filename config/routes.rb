@@ -1,5 +1,7 @@
-Rails.application.routes.draw do
+ Rails.application.routes.draw do
   devise_for :users
   root "grams#index"
-  resource :grams
+  resource :grams do
+    resource :comments, only: :create
+  end 
 end
