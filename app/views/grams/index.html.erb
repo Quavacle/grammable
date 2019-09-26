@@ -11,8 +11,9 @@
 
       <div class="gram-actions float-right">
         <% if current_user && current_user == gram.user %>
-          <%= link_to 'Edit', grams_edit_path(gram) %>
-          <%= link_to 'Destroy', grams_path(gram), method: :delete, data: {confirm: 'Are you sure?'} %>
+          <%= gram.id %>
+          <%= link_to 'Edit', edit_gram_path(gram) %>
+          <%= link_to 'Destroy', gram_path(gram), method: :delete, data: {confirm: 'Are you sure?'} %>
         <% end %>
       </div>
       <br class="clear-fix" />
@@ -27,7 +28,7 @@
           </div>
           <% end %>
         <h4>Add a comment</h4>
-        <%= simple_form_for Comment.new, url: grams_comments_path(gram) do |f| %>
+        <%= simple_form_for Comment.new, url: gram_comments_path(gram) do |f| %>
           <%= f.input :message %>
           <%= f.submit 'Add comment', class: 'my-btn' %>
         <% end %>
